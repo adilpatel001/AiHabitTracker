@@ -10,7 +10,7 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_URL || "")
+const allowedOrigins = (process.env.CLIENT_URL || "https://ai-habit-tracker-frontend-alpha.vercel.app")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
