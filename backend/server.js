@@ -15,39 +15,34 @@ const allowedOrigins = (process.env.CLIENT_URL || "https://ai-habit-tracker-fron
   .map((s) => s.trim())
   .filter(Boolean);
 
-// const corsOptions = {
-//   origin(origin, cb) {
+  console.log("CLIENT_URL:", process.env.CLIENT_URL);
+  console.log("allowedOrigins:", allowedOrigins);
 
-//     // Allow requests with no origin (curl, same-origin, server-to-server)
-//     if (!origin) return cb(null, true);
+const corsOptions = {
+  origin(origin, cb) {
+
+    console.log("Incoming origin:", JSON.stringify(origin));
+    console.log("Allowed origins:", allowedOrigins.map(o => JSON.stringify(o)));
+    // Allow requests with no origin (curl, same-origin, server-to-server)
+    if (!origin) return cb(null, true);
     
-//     // Allow any localhost / 127.0.0.1 origin in development
-//     if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
-//       return cb(null, true);
-//     }
+    // Allow any localhost / 127.0.0.1 origin in development
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return cb(null, true);
+    }
     
-//     // Allow anything explicitly listed in CLIENT_URL (comma-separated)
-//     if (allowedOrigins.includes(origin)) return cb(null, true);
+    // Allow anything explicitly listed in CLIENT_URL (comma-separated)
+    if (allowedOrigins.includes(origin)) return cb(null, true);
     
-//     return cb(new Error(`Origin ${origin} not allowed by CORS`));
-//   },
-//   credentials: true,
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-// };
+    return cb(new Error(`Origin ${origin} not allowed by CORS`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions));
-
-app.use(cors({
-    origin: "https://ai-habit-tracker-frontend-alpha.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}));
-
-app.options("*", cors());
-
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/api/health", (req, res) => 
