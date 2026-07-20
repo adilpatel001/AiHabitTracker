@@ -15,8 +15,14 @@ const allowedOrigins = (process.env.CLIENT_URL || "https://ai-habit-tracker-fron
   .map((s) => s.trim())
   .filter(Boolean);
 
+  console.log("CLIENT_URL:", process.env.CLIENT_URL);
+  console.log("allowedOrigins:", allowedOrigins);
+
 const corsOptions = {
   origin(origin, cb) {
+
+    console.log("Incoming origin:", JSON.stringify(origin));
+    console.log("Allowed origins:", allowedOrigins.map(o => JSON.stringify(o)));
     // Allow requests with no origin (curl, same-origin, server-to-server)
     if (!origin) return cb(null, true);
     
